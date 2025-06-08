@@ -1,46 +1,42 @@
-Webcam Digit Recognizer
+**my digit recognizer**  
 
-실시간 웹캠으로 숫자를 인식하는 딥러닝 기반의 숫자 인식기입니다. OpenCV로 실시간 카메라 영상에서 숫자가 포함된 영역을 잘라내고, 전처리 및 딥러닝 모델을 통해 예측 결과를 화면에 표시합니다.
-
----
-
-개요
-
-이 프로젝트는 TensorFlow 기반 숫자 분류 모델을 이용하여 웹캠의 실시간 영상에서 숫자를 인식합니다. 중심 사각형 영역(ROI)에 손글씨 숫자를 보여주면 실시간으로 예측된 숫자가 화면에 출력됩니다.
+웹캠으로 영상 내의 손글씨 숫자를 인식하는 딥러닝 기반의 숫자 인식기입니다. OpenCV로 실시간 카메라 영상에서 숫자가 포함된 영역을 잘라내고 전처리 및 딥러닝 모델을 통해 예측 결과를 화면에 표시합니다.
 
 ---
 
-실행 방법
+**개요**
 
-1. **Python 설치**  
-   Python 3.8 이상이 설치되어 있어야 합니다.
+이 프로젝트는 TensorFlow 기반 숫자 분류 모델을 이용해 캡쳐된 영상에서 숫자를 인식합니다. 중심 사각형 영역(ROI)에 손글씨 숫자를 보여주면 실시간으로 예측된 숫자가 화면에 출력됩니다.
 
-2. **필수 패키지 설치**
+---
+
+**실행 방법**
+
+1. 필수 패키지 설치
 
    ```bash
    pip install opencv-python tensorflow numpy
    ```
 
-3. **실행 명령어**
+2. **실행 명령어**
 
    ```bash
    python src/webcam_digit_recognizer.py
    ```
+3. **사용법**
+   - 웹캠의 중앙 파란색 사각형 안에 손글씨 숫자가 위치한 영상을 재생
+   - 예측된 숫자가 좌측 상단에 실시간으로 표시
+   - ESC 키를 누르거나 영상이 끝나면 종료
 
-4. **사용법**
-   - 웹캠이 켜지면 중앙의 파란색 사각형 안에 손글씨 숫자를 보여주세요.
-   - 예측된 숫자가 좌측 상단에 실시간으로 표시됩니다.
-   - ESC 키를 누르면 종료됩니다.
 
 ---
 
 ## 주요 기능
 
-- 실시간 웹캠 영상 캡처
+- 영상 캡처 인식
 - 중심 영역 ROI에서 숫자 영역 추출
 - 딥러닝 모델을 통한 숫자 예측
 - 예측값 실시간 표시
-- 임시 이미지 파일 저장/삭제로 메모리 관리
 
 ---
 
@@ -49,12 +45,13 @@ Webcam Digit Recognizer
 ```
 111/
 ├── model/
-│   └── digit_model.h5           # 사전 학습된 Keras 숫자 분류 모델
+│   └── digit_model         
 ├── src/
-│   ├── digit_recognizer.py  # 실시간 숫자 인식 실행 파일
-│   ├── predict_digit.py            # 숫자 예측 로직 (이미지 입력)
-│   └── utils/
-│       └── preprocessing.py        # 이미지 전처리 함수
+│   ├── train_model.py  
+│   ├── predict_digit.py
+│   └── digit_recognizer.py       
+├── utils/
+│       └── preprocessing.py       
 └── README.md                    
 ```
 
@@ -62,88 +59,56 @@ Webcam Digit Recognizer
 
 ## 주요 파일 설명
 
-### `digit_recognizer.py`
 
-```python
-import cv2
-import os
-import uuid
-from predict_digit import predict_digit
 
-cap = cv2.VideoCapture(0)
+### `train_model.py`
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+```
+MNIST 손글씨 숫자 이미지 데이터셋을 기반으로 CNN 모델을 학습시키고 이를 저장
 
-    h, w, _ = frame.shape
-    roi = frame[h//2 - 100:h//2 + 100, w//2 - 100:w//2 + 100]
-
-    temp_filename = f"temp_{uuid.uuid4().hex}.jpg"
-    cv2.imwrite(temp_filename, roi)
-
-    digit = predict_digit(temp_filename)
-
-    if os.path.exists(temp_filename):
-        os.remove(temp_filename)
-
-    if digit is not None:
-        cv2.putText(frame, f"Predicted: {digit}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-
-    cv2.rectangle(frame, (w//2 - 100, h//2 - 100), (w//2 + 100, h//2 + 100), (255, 0, 0), 2)
-    cv2.imshow("Digit Recognizer", frame)
-
-    if cv2.waitKey(1) & 0xFF == 27:  # ESC 키
-        break
-
-cap.release()
-cv2.destroyAllWindows()
+데이터 준비	- MNIST 로드 및 정규화
+모델 구성 - CNN
+컴파일 및 학습 - 전체 데이터셋 5회 반복학습 
+모델 저장	- model/digit_model 폴더에 저장
 ```
 
 ---
 
 ### `predict_digit.py`
 
-```python
-import os
-import cv2
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-from utils.preprocessing import preprocess_image
-import numpy as np
+```
+이미지를 불러와 전처리 후 학습된 모델을 사용해 숫자를 예측
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # CPU 사용 강제
+기본 설정 및 모델 불러오기
+예측 함수 predict_digit(image_path)
+ (__main__)으로 학습된 모델 테스트
+```
 
-model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../model/digit_model"))
-model = load_model(model_path)
+---
 
-def predict_digit(image_path):
-    image = cv2.imread(image_path)
-    if image is None:
-        return "이미지를 불러올 수 없습니다: " + image_path
+### `digit_recognizer.py`
 
-    processed = preprocess_image(image)
-    processed = np.array(processed, dtype=np.float32)
-    prediction = model.predict(processed)
-    return int(tf.argmax(prediction, axis=1).numpy()[0])
+```
+비디오 파일로부터 프레임을 읽고 화면 중앙에서 숫자를 예측
+
+비디오 불러오기
+ROI 추출
+ROI 이미지로 숫자 예측
+예측 결과 시각화
 ```
 
 ---
 
 ### `preprocessing.py`
 
-```python
-import cv2
-import numpy as np
-
-def preprocess_image(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    resized = cv2.resize(gray, (28, 28))
-    normalized = resized / 255.0
-    reshaped = normalized.reshape(1, 28, 28, 1)
-    return reshaped
 ```
+일반 이미지를 MNIST 스타일로 전처리해 딥러닝 모델에 입력할 수 있도록 변환
+```
+---
+
+## 결과 화면
+
+
 
 ---
 
