@@ -108,7 +108,9 @@ ROI 이미지로 숫자 예측
 
 ## 결과 화면
 
+![Image](https://github.com/user-attachments/assets/58d29c57-2b61-49b8-b204-362088ba8651)
 
+![Image](https://github.com/user-attachments/assets/6b40835d-a2a0-49f6-8f05-58cd87129453)
 
 ---
 
