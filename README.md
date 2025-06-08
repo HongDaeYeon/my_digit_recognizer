@@ -43,7 +43,7 @@
 ## 디렉터리 구조
 
 ```
-111/
+my_digit_recognizer/
 ├── model/
 │   └── digit_model         
 ├── src/
