@@ -21,7 +21,7 @@
 2. **실행 명령어**
 
    ```bash
-   python src/webcam_digit_recognizer.py
+   python src/digit_recognizer.py
    ```
 3. **사용법**
    - 웹캠의 중앙 파란색 사각형 안에 손글씨 숫자가 위치한 영상을 재생
