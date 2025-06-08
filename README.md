@@ -1,16 +1,16 @@
-# ✍️ Webcam Digit Recognizer
+Webcam Digit Recognizer
 
 실시간 웹캠으로 숫자를 인식하는 딥러닝 기반의 숫자 인식기입니다. OpenCV로 실시간 카메라 영상에서 숫자가 포함된 영역을 잘라내고, 전처리 및 딥러닝 모델을 통해 예측 결과를 화면에 표시합니다.
 
 ---
 
-## 📚 개요
+개요
 
 이 프로젝트는 TensorFlow 기반 숫자 분류 모델을 이용하여 웹캠의 실시간 영상에서 숫자를 인식합니다. 중심 사각형 영역(ROI)에 손글씨 숫자를 보여주면 실시간으로 예측된 숫자가 화면에 출력됩니다.
 
 ---
 
-## ▶️ 실행 방법
+실행 방법
 
 1. **Python 설치**  
    Python 3.8 이상이 설치되어 있어야 합니다.
@@ -34,7 +34,7 @@
 
 ---
 
-## ✨ 주요 기능
+## 주요 기능
 
 - 실시간 웹캠 영상 캡처
 - 중심 영역 ROI에서 숫자 영역 추출
@@ -44,26 +44,25 @@
 
 ---
 
-## 📁 디렉터리 구조
+## 디렉터리 구조
 
 ```
 111/
-├── dataset/                     # (선택) 학습용 데이터셋 저장 위치
 ├── model/
 │   └── digit_model.h5           # 사전 학습된 Keras 숫자 분류 모델
 ├── src/
-│   ├── webcam_digit_recognizer.py  # 실시간 숫자 인식 실행 파일
+│   ├── digit_recognizer.py  # 실시간 숫자 인식 실행 파일
 │   ├── predict_digit.py            # 숫자 예측 로직 (이미지 입력)
 │   └── utils/
 │       └── preprocessing.py        # 이미지 전처리 함수
-└── README.md                    # 프로젝트 설명서
+└── README.md                    
 ```
 
 ---
 
-## 📄 주요 파일 설명
+## 주요 파일 설명
 
-### ✅ `src/webcam_digit_recognizer.py`
+### `digit_recognizer.py`
 
 ```python
 import cv2
@@ -104,7 +103,7 @@ cv2.destroyAllWindows()
 
 ---
 
-### ✅ `src/predict_digit.py`
+### `predict_digit.py`
 
 ```python
 import os
@@ -132,7 +131,7 @@ def predict_digit(image_path):
 
 ---
 
-### ✅ `src/utils/preprocessing.py`
+### `preprocessing.py`
 
 ```python
 import cv2
@@ -148,7 +147,7 @@ def preprocess_image(image):
 
 ---
 
-## 🛠 사용 기술
+## 사용 기술
 
 - **Python 3**
 - **OpenCV** – 실시간 영상 처리
@@ -157,27 +156,3 @@ def preprocess_image(image):
 
 ---
 
-## ⚠️ 주의 사항
-
-- `np.bool` 관련 오류 발생 시 → `numpy` 버전을 1.24 이하로 설정하거나 `np.bool_`로 대체된 코드로 수정하세요.
-- GStreamer 경고는 일부 시스템에서 발생할 수 있으며 무시해도 무방합니다.
-- 예측 정확도는 학습된 모델 성능에 따라 달라집니다.
-
----
-
-## ✅ TODO (향후 개선 아이디어)
-
-- 임시 이미지 저장 없이 OpenCV 프레임을 직접 모델에 전달하도록 개선
-- 복수 숫자 인식 (예: 7895314 등)
-- 손글씨 인식 정확도 향상 위한 데이터 보강
-- GUI 인터페이스 추가
-
----
-
-## 📬 문의
-
-질문이나 피드백은 [your_email@example.com] 혹은 GitHub Issue를 통해 남겨주세요!
-
----
-
-© 2025 Webcam Digit Recognizer Project
